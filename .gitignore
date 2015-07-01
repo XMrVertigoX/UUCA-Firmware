@@ -1,0 +1,8 @@
+# Eclipse project data
+.cproject
+.project
+.settings
+
+# Eclipse binary output
+Debug
+Release
