@@ -61,7 +61,7 @@ int main(void) {
 		 rising = true;
 		 }*/
 
-		_delay_ms(250);
+		//_delay_ms(250);
 	}
 
 	//Disable interrupts in case of system failure
