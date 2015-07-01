@@ -15,6 +15,7 @@
 
 // AVR Libraries
 #include <avr/interrupt.h>
+
 #include <util/delay.h>
 
 // Local libraries
@@ -22,6 +23,7 @@
 #include "Events.h"
 #include "Serial.h"
 #include "SPI.h"
+
 #include "lib/MCP4151.h"
 
 // Friendly names
