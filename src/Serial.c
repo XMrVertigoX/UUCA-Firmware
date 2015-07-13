@@ -1,12 +1,5 @@
 #include "Serial.h"
 
-/*
- * Serial.c
- *
- * Created on: May 13, 2015
- * Author: Caspar Friedrich
- */
-
 void Serial_initializeHardware(void) {
 	UCSR0B |= (1 << RXEN0) | (1 << TXEN0);
 	UCSR0C |= (1 << UCSZ00) | (1 << UCSZ01);
@@ -14,12 +7,11 @@ void Serial_initializeHardware(void) {
 	UBRR0L = BAUD_PRESCALE;
 }
 
-void Serial_writeByte(uint8_t data) {
-	// Send data byte
-	UDR0 = data;
+void writeByte(uint8_t dataByte) {
+	UDR0 = dataByte;
 
-	// Wait until transfer is done
-	wait(UCSR0A & (1 << UDRE0));
+	while (!(UCSR0A & (1 << UDRE0)))
+		;
 }
 
 void Serial_print(char *str) {
@@ -29,9 +21,9 @@ void Serial_print(char *str) {
 
 		// Print a space if char is not an ASCII character
 		if (isascii(str[i])) {
-			Serial_writeByte(str[i]);
+			writeByte(str[i]);
 		} else {
-			Serial_writeByte(0x20);
+			writeByte(0x20);
 		}
 	}
 }
@@ -41,7 +33,7 @@ void Serial_printAndReturn(char *str) {
 	Serial_print("\r\n");
 }
 
-void Serial_printInteger(int val, uint8_t base) {
+void Serial_printInteger(long val, uint8_t base) {
 	uint8_t digits;
 
 	// Calculate amount of digits
@@ -59,7 +51,7 @@ void Serial_printInteger(int val, uint8_t base) {
 	Serial_print(str);
 }
 
-void Serial_printIntegerAndReturn(int val, uint8_t base) {
+void Serial_printIntegerAndReturn(long val, uint8_t base) {
 	Serial_printInteger(val, base);
 	Serial_print("\r\n");
 }

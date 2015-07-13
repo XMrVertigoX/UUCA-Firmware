@@ -1,13 +1,6 @@
 #include "ADC.h"
 
 /*
- * ADC.c
- *
- * Created on: Apr 15, 2015
- * Author: Caspar Friedrich
- */
-
-/*
  *  Setup ADC
  *
  * ADEN: Enable the ADC
@@ -59,7 +52,7 @@ void startConversion() {
  * 8+: Invalid address
  */
 bool channelValidity(uint8_t channel) {
-	if (channel < 8) {
+	if (channel <= 8) {
 		return true;
 	} else {
 		return false;
@@ -88,7 +81,10 @@ uint16_t ADC_readValue(uint8_t channel) {
 
 	setChannel(channel);
 	startConversion();
-	wait(conversionFinished());
+
+	while (!conversionFinished())
+		;
+
 	resetChannel();
 
 	return ADC;

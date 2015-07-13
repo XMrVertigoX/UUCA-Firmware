@@ -1,10 +1,3 @@
-/*
- * MCP4151.h
- *
- * Created on: 26.03.2015
- * Author: Caspar Friedrich
- */
-
 #ifndef LIB_MCP4151_H_
 #define LIB_MCP4151_H_
 
@@ -36,4 +29,4 @@
 #define MCP4151_16_READ     ((1 << MCP4151_16_CMD0) | (1 << MCP4151_16_CMD1))
 #define MCP4151_16_WRITE    0
 
-#endif /* LIB_MCP4151_H_ */
+#endif
