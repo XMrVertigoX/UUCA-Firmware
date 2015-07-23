@@ -7,7 +7,7 @@ int VREF = 5;
 int BITS = 10;
 
 float getVoltage(uint16_t adcValue) {
-	return VREF*((float)adcValue)/(2^(BITS));
+	return VREF*((float)adcValue)/((2^BITS)-1);
 }
 
 int main(void) {
