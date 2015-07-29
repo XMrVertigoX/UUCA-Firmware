@@ -9,3 +9,7 @@ README.html
 ## Eclipse binary output
 Debug
 Release
+
+*.elf
+*.hex
+*.o
