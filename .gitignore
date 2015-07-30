@@ -1,15 +1,16 @@
-## Readme preview file
+# Readme preview file
 README.html
 
-## Eclipse project data
+# Eclipse project data
 .cproject
 .project
 .settings
 
-## Eclipse binary output
+# Eclipse build output
 Debug
 Release
 
+# Compiler output
 *.elf
 *.hex
 *.o

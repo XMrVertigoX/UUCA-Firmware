@@ -1,17 +1,17 @@
-TARGET = UUCA-Firmware
+BDIR = bin
+SDIR = src
+
 MCU = atmega328p
-SOURCES = src/UUCA-Firmware.c src/ADC.c src/SPI.c src/Serial.c
-
-PROGRAMMER = usbtiny
-#PORT = -P /dev/ttyACM0
-#BAUD = -B 115200
-
 F_CPU = 16000000
 
-#Ab hier nichts verändern
-OBJECTS = $(SOURCES:.c=.o)
-CFLAGS = -c -Os -D F_CPU=$(F_CPU)
-LDFLAGS =
+TARGET = Firmware
+SOURCES = $(wildcard $(SDIR)/*.c)
+OBJECTS = $(patsubst %.c, %.o, $(SOURCES))
+
+CC = avr-gcc
+CFLAGS = -c -Os -DF_CPU=$(F_CPU)
+
+PROGRAMMER = usbtiny
 
 all: hex eeprom
 
@@ -20,28 +20,27 @@ hex: $(TARGET).hex
 eeprom: $(TARGET)_eeprom.hex
 
 $(TARGET).hex: $(TARGET).elf
-	avr-objcopy -O ihex -j .data -j .text $(TARGET).elf $(TARGET).hex
+	avr-objcopy -j .text -j .data -O ihex $(BDIR)/$(TARGET).elf $(BDIR)/$(TARGET).hex
 
 $(TARGET)_eeprom.hex: $(TARGET).elf
-	avr-objcopy -O ihex -j .eeprom --change-section-lma .eeprom=1 $(TARGET).elf $(TARGET)_eeprom.hex
+	avr-objcopy -j .eeprom --change-section-lma .eeprom=0 -O ihex $(BDIR)/$(TARGET).elf $(BDIR)/$(TARGET)_eeprom.hex
 
 $(TARGET).elf: $(OBJECTS)
-	avr-gcc $(LDFLAGS) $(OBJECTS) -o $(TARGET).elf
+	$(CC) $(OBJECTS) -o $(BDIR)/$(TARGET).elf
 
-.c.o:
-	avr-gcc $(CFLAGS) -mmcu=$(MCU) $< -o $@
+%.o: %.c
+	$(CC) $(CFLAGS) -mmcu=$(MCU) -o $@ $<
 
 size:
-	avr-size --mcu=$(MCU) -C $(TARGET).elf
+	avr-size --mcu=$(MCU) -C $(BDIR)/$(TARGET).elf
 
 program:
-	avrdude -p $(MCU) $(PORT) $(BAUD) -c $(PROGRAMMER) -U flash:w:$(TARGET).hex:a
+	avrdude -p $(MCU) -c $(PROGRAMMER) -U flash:w:$(BDIR)/$(TARGET).hex:a
 
-clean_tmp:
-	rm -rf *.o
-	rm -rf *.elf
+program_diamax:
+	avrdude -p $(MCU) -c stk200 -P /dev/ttyACM0 -U flash:w:$(BDIR)/$(TARGET).hex:a
 
 clean:
-	rm -rf *.o
-	rm -rf *.elf
-	rm -rf *.hex
+	rm -f $(SDIR)/*.o
+	rm -f $(BDIR)/*.elf
+	rm -f $(BDIR)/*.hex
