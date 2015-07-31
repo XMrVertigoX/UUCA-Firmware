@@ -1,9 +1,12 @@
+# Directories
 BDIR = bin
 SDIR = src
 
+# MCU parameter
 MCU = atmega328p
 F_CPU = 16000000
 
+# Default Arduino fuse configuration
 EFUSE = 0x05
 HFUSE = 0xDE
 LFUSE = 0xFF
@@ -13,11 +16,14 @@ SOURCES = $(wildcard $(SDIR)/*.c)
 OBJECTS = $(patsubst %.c, %.o, $(SOURCES))
 
 CC = avr-gcc
-CFLAGS = -c -O s -D F_CPU=$(F_CPU) -I $(SDIR)/include
+CFLAGS = -c -Os -DF_CPU=$(F_CPU) -I$(SDIR)/include
 
 PROGRAMMER = usbtiny
 
-all: hex eeprom
+
+# ----- Rules ------------------------------------------------------------------
+
+all: hex
 
 hex: $(TARGET).hex
 
@@ -48,6 +54,6 @@ program_diamax:
 	avrdude -p $(MCU) -c stk500 -P /dev/ttyACM0 -U flash:w:$(BDIR)/$(TARGET).hex:a
 
 clean:
-	rm -f $(SDIR)/*.o
-	rm -f $(BDIR)/*.elf
-	rm -f $(BDIR)/*.hex
+	rm -rf $(SDIR)/*.o
+	rm -rf $(BDIR)/*.elf
+	rm -rf $(BDIR)/*.hex

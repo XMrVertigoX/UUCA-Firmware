@@ -7,13 +7,14 @@ README.html
 .settings
 
 # Eclipse build output
-Debug
-Release
+/Debug/
+/Default/
+/Release/
 
 # Compiler output
 *.elf
 *.hex
 *.o
 
-# Binary folder
+# Binary output folder
 bin
