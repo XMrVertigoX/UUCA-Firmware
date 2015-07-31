@@ -4,12 +4,16 @@ SDIR = src
 MCU = atmega328p
 F_CPU = 16000000
 
+EFUSE = 0x05
+HFUSE = 0xDE
+LFUSE = 0xFF
+
 TARGET = Firmware
 SOURCES = $(wildcard $(SDIR)/*.c)
 OBJECTS = $(patsubst %.c, %.o, $(SOURCES))
 
 CC = avr-gcc
-CFLAGS = -c -Os -DF_CPU=$(F_CPU)
+CFLAGS = -c -O s -D F_CPU=$(F_CPU) -I $(SDIR)/include
 
 PROGRAMMER = usbtiny
 
@@ -37,8 +41,11 @@ size:
 program:
 	avrdude -p $(MCU) -c $(PROGRAMMER) -U flash:w:$(BDIR)/$(TARGET).hex:a
 
+program_fuse:
+	avrdude -p $(MCU) -c $(PROGRAMMER) -U efuse:w:$(EFUSE):m -U hfuse:w:$(HFUSE):m -U lfuse:w:$(LFUSE):m
+
 program_diamax:
-	avrdude -p $(MCU) -c stk200 -P /dev/ttyACM0 -U flash:w:$(BDIR)/$(TARGET).hex:a
+	avrdude -p $(MCU) -c stk500 -P /dev/ttyACM0 -U flash:w:$(BDIR)/$(TARGET).hex:a
 
 clean:
 	rm -f $(SDIR)/*.o
