@@ -11,7 +11,8 @@ int main(void) {
 
 	for (;;) {
 		Serial_print("ADC: ");
-		Serial_printIntegerAndReturn(ADC_readValue(0), 10);
+		Serial_printInteger(ADC_readValue(8), 10);
+		Serial_print("\n");
 
 		_delay_ms(250);
 	}

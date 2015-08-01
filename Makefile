@@ -23,7 +23,7 @@ PROGRAMMER = usbtiny
 
 # ----- Rules ------------------------------------------------------------------
 
-all: hex
+all: hex eeprom
 
 hex: $(TARGET).hex
 
@@ -36,10 +36,10 @@ $(TARGET)_eeprom.hex: $(TARGET).elf
 	avr-objcopy -j .eeprom --change-section-lma .eeprom=0 -O ihex $(BDIR)/$(TARGET).elf $(BDIR)/$(TARGET)_eeprom.hex
 
 $(TARGET).elf: $(OBJECTS)
-	$(CC) $(OBJECTS) -o $(BDIR)/$(TARGET).elf
+	$(CC) -mmcu=$(MCU) $(OBJECTS) -o $(BDIR)/$(TARGET).elf
 
 %.o: %.c
-	$(CC) $(CFLAGS) -mmcu=$(MCU) -o $@ $<
+	$(CC) -mmcu=$(MCU) $(CFLAGS) -o $@ $<
 
 size:
 	avr-size --mcu=$(MCU) -C $(BDIR)/$(TARGET).elf
