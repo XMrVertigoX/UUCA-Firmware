@@ -3,6 +3,7 @@
 #include "ADC.h"
 #include "Serial.h"
 #include "SPI.h"
+
 int VREF = 5;
 int BITS = 10;
 

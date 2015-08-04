@@ -3,7 +3,7 @@ BDIR = bin
 SDIR = src
 
 # MCU parameter
-MCU = atmega328p
+MCU   = atmega328p
 F_CPU = 16000000
 
 # Default Arduino fuse configuration
@@ -11,15 +11,15 @@ EFUSE = 0x05
 HFUSE = 0xDE
 LFUSE = 0xFF
 
-TARGET = Firmware
+TARGET  = Firmware
 SOURCES = $(wildcard $(SDIR)/*.c)
 OBJECTS = $(patsubst %.c, %.o, $(SOURCES))
 
-CC = avr-gcc
-CFLAGS = -c -Os -DF_CPU=$(F_CPU) -I$(SDIR)/include
+CC      = avr-gcc
+CFLAGS  = -c -Os -DF_CPU=$(F_CPU) -I$(SDIR)/include
+LDFLAGS = 
 
 PROGRAMMER = usbtiny
-
 
 # ----- Rules ------------------------------------------------------------------
 
@@ -36,10 +36,10 @@ $(TARGET)_eeprom.hex: $(TARGET).elf
 	avr-objcopy -j .eeprom --change-section-lma .eeprom=0 -O ihex $(BDIR)/$(TARGET).elf $(BDIR)/$(TARGET)_eeprom.hex
 
 $(TARGET).elf: $(OBJECTS)
-	$(CC) -mmcu=$(MCU) $(OBJECTS) -o $(BDIR)/$(TARGET).elf
+	$(CC) $(LDFLAGS) -mmcu=$(MCU) $(OBJECTS) -o $(BDIR)/$(TARGET).elf
 
 %.o: %.c
-	$(CC) -mmcu=$(MCU) $(CFLAGS) -o $@ $<
+	$(CC) $(CFLAGS) -mmcu=$(MCU) -o $@ $<
 
 size:
 	avr-size --mcu=$(MCU) -C $(BDIR)/$(TARGET).elf
