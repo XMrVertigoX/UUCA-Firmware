@@ -1,5 +1,5 @@
 # Directories
-BDIR = bin
+BDIR = .
 SDIR = src
 
 # MCU parameter
