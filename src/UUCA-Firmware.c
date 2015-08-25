@@ -1,17 +1,17 @@
 #include <inttypes.h>
 
+#include "avr/io.h"
 #include <util/delay.h>
-//#include "avr/io.h"
 
 #include "ADC.h"
 #include "Serial.h"
 #include "SPI.h"
 
-/*FUSES = {
-    .low      = (FUSE_CKSEL0 & FUSE_CKSEL1 & FUSE_CKSEL3 & FUSE_SUT0 & FUSE_CKDIV8),
+FUSES = {
+    .low      = LFUSE_DEFAULT,
     .high     = HFUSE_DEFAULT,
     .extended = EFUSE_DEFAULT,
-};*/
+};
 
 int VREF = 5;
 int BITS = 10;
