@@ -1,7 +1,7 @@
 #ifndef SERIAL_H_
 #define SERIAL_H_
 
-#include <stdint.h>
+#include <inttypes.h>
 #include <stdlib.h>
 #include <ctype.h>
 #include <math.h>

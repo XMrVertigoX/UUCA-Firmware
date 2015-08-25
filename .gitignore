@@ -12,9 +12,7 @@ README.html
 /Release/
 
 # Compiler output
+*.eep
 *.elf
 *.hex
 *.o
-
-# Binary output folder
-bin
