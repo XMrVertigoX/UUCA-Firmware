@@ -1,5 +1,7 @@
 MCU    = atmega328p
-TARGET = UUCA-Firmware
+TARGET = main
+
+BINARY = Firmware.elf
 
 # Macros
 F_CPU = 16000000
@@ -30,28 +32,28 @@ ISP = $(USBTINY)
 
 # ----- Rules ------------------------------------------------------------------
 
-all: $(TARGET).elf
+all: $(BINARY)
 
-$(TARGET).elf: $(OBJECTS)
-	$(CC) $(LDFLAGS) $(OBJECTS) -o $(TARGET).elf
+$(BINARY): $(OBJECTS)
+	$(CC) $(LDFLAGS) $(OBJECTS) -o $(BINARY)
 
 %.o: %.c
 	$(CC) $(CFLAGS) -o $@ $<
 
 program: program_flash program_eeprom program_fuses
 
-program_flash: $(TARGET).elf
-	avrdude -p$(MCU) $(ISP) -Uflash:w:$(TARGET).elf
+program_flash: $(BINARY)
+	avrdude -p$(MCU) $(ISP) -Uflash:w:$(BINARY)
 
-program_eeprom: $(TARGET).elf
-	avrdude -p$(MCU) $(ISP) -Ueeprom:w:$(TARGET).elf
+program_eeprom: $(BINARY)
+	avrdude -p$(MCU) $(ISP) -Ueeprom:w:$(BINARY)
 
-program_fuses: $(TARGET).elf
-	avrdude -p$(MCU) $(ISP) -Ulfuse:w:$(TARGET).elf -Uhfuse:w:$(TARGET).elf -Uefuse:w:$(TARGET).elf
+program_fuses: $(BINARY)
+	avrdude -p$(MCU) $(ISP) -Ulfuse:w:$(BINARY) -Uhfuse:w:$(BINARY) -Uefuse:w:$(BINARY)
 
-size: $(TARGET).elf
-	avr-size $(TARGET).elf
+size: $(BINARY)
+	avr-size $(BINARY)
 
 clean:
-	rm -rf $(TARGET).elf $(OBJECTS)
+	rm -rf $(BINARY) $(OBJECTS)
 	
