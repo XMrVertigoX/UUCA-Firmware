@@ -10,10 +10,12 @@ IO_SELECT  = __AVR_ATmega328P__
 
 SOURCES  = $(wildcard $(SDIR)/*.c)
 SOURCES += $(wildcard $(SDIR)/drivers/*.c)
+SOURCES += $(wildcard $(SDIR)/FreeRTOS/*.c)
 
 OBJECTS = $(patsubst %.c, %.o, $(SOURCES))
 
-INCLUDES = -I$(SDIR)/include
+INCLUDES  = -I$(SDIR)/include
+INCLUDES += -I$(SDIR)/FreeRTOS/include
 
 CC      = avr-gcc
 CFLAGS  = -c -Os -DF_CPU=$(F_CPU) -D$(IO_SELECT) -mmcu=$(MCU) $(INCLUDES)
