@@ -45,8 +45,8 @@ int main(void) {
 	Serial_initializeHardware();
 	SPI_initializeHardware();
 
-	xTaskCreate(aTaskFunction, "test", STACK_SIZE_FOR_TASK, NULL,
-			TASK_PRIORITY, NULL);
+	xTaskCreate(aTaskFunction, "test", STACK_SIZE_FOR_TASK, NULL, TASK_PRIORITY,
+			NULL);
 
 	vTaskStartScheduler();
 }
