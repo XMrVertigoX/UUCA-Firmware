@@ -19,27 +19,16 @@ CC      = avr-gcc
 CFLAGS  = -c -Os -DF_CPU=$(F_CPU) -D$(IO_SELECT) -mmcu=$(MCU) $(INCLUDES)
 LDFLAGS = -mmcu=$(MCU)
 
-# Fuse configuration
-LFUSE = 0xFF
-HFUSE = 0xD9
-EFUSE = 0xFC
+# AVR-ISPs
+USBTINY = -cusbtiny
+DIAMEX  = -cstk500 -P/dev/ttyACM0
 
-PROGRAMMER = usbtiny
+ISP = $(USBTINY)
 
 
 # ----- Rules ------------------------------------------------------------------
 
-all: hex eeprom
-
-hex: $(TARGET).hex
-
-eeprom: $(TARGET)_eeprom.hex
-
-$(TARGET).hex: $(TARGET).elf
-	avr-objcopy -j .text -j .data -O ihex $(TARGET).elf $(TARGET).hex
-
-$(TARGET)_eeprom.hex: $(TARGET).elf
-	avr-objcopy -j .eeprom --change-section-lma .eeprom=0 -O ihex $(TARGET).elf $(TARGET)_eeprom.hex
+all: $(TARGET).elf
 
 $(TARGET).elf: $(OBJECTS)
 	$(CC) $(LDFLAGS) $(OBJECTS) -o $(TARGET).elf
@@ -47,25 +36,20 @@ $(TARGET).elf: $(OBJECTS)
 %.o: %.c
 	$(CC) $(CFLAGS) -o $@ $<
 
-program: program_flash
+program: program_flash program_eeprom program_fuses
 
-program_flash:
-	avrdude -p$(MCU) -c$(PROGRAMMER) -Uflash:w:$(TARGET).hex:a
+program_flash: $(TARGET).elf
+	avrdude -p$(MCU) $(ISP) -Uflash:w:$(TARGET).elf
 
-program_eeprom:
-	avrdude -p$(MCU) -c$(PROGRAMMER) -Ueeprom:w:$(TARGET)_eeprom.hex:a
+program_eeprom: $(TARGET).elf
+	avrdude -p$(MCU) $(ISP) -Ueeprom:w:$(TARGET).elf
 
-program_fuse:
-	avrdude -p$(MCU) -c$(PROGRAMMER) -Ulfuse:w:$(LFUSE):m -Uhfuse:w:$(HFUSE):m -Uefuse:w:$(EFUSE):m
+program_fuses: $(TARGET).elf
+	avrdude -p$(MCU) $(ISP) -Ulfuse:w:$(TARGET).elf -Uhfuse:w:$(TARGET).elf -Uefuse:w:$(TARGET).elf
 
-program_diamax:
-	avrdude -p$(MCU) -cstk500 -P /dev/ttyACM0 -U flash:w:$(TARGET).hex:a
-
-size:
+size: $(TARGET).elf
 	avr-size $(TARGET).elf
 
 clean:
-	rm -rf $(OBJECTS)
-	rm -rf *_eeprom.hex
-	rm -rf *.elf
-	rm -rf *.hex
+	rm -rf $(TARGET).elf $(OBJECTS)
+	

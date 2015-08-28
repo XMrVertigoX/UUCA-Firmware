@@ -12,7 +12,5 @@ README.html
 /Release/
 
 # Compiler output
-*.eep
 *.elf
-*.hex
 *.o
