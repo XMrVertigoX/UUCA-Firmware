@@ -1,6 +1,3 @@
-# Directories
-SDIR = src
-
 MCU    = atmega328p
 TARGET = UUCA-Firmware
 
@@ -8,25 +5,25 @@ TARGET = UUCA-Firmware
 F_CPU = 16000000
 IO_SELECT  = __AVR_ATmega328P__
 
-SOURCES  = $(wildcard $(SDIR)/*.c)
-SOURCES += $(wildcard $(SDIR)/drivers/*.c)
-SOURCES += $(wildcard $(SDIR)/FreeRTOS/*.c)
-SOURCES += $(wildcard $(SDIR)/FreeRTOS/portable/MemMang/*.c)
-SOURCES += $(wildcard $(SDIR)/FreeRTOS/portable/GCC/ATMega328P/*.c)
+SOURCES  = $(wildcard src/*.c)
+SOURCES += $(wildcard src/drivers/*.c)
+SOURCES += $(wildcard FreeRTOS/*.c)
+SOURCES += $(wildcard FreeRTOS/portable/MemMang/*.c)
+SOURCES += $(wildcard FreeRTOS/portable/GCC/ATMega328P/*.c)
 
 OBJECTS = $(patsubst %.c, %.o, $(SOURCES))
 
-INCLUDES  = -I$(SDIR)/include
-INCLUDES += -I$(SDIR)/FreeRTOS/include
-INCLUDES += -I$(SDIR)/FreeRTOS/portable/GCC/ATMega328P
+INCLUDES  = -I src/include
+INCLUDES += -I FreeRTOS/include
+INCLUDES += -I FreeRTOS/portable/GCC/ATMega328P
 
 CC      = avr-gcc
 CFLAGS  = -c -Os -DF_CPU=$(F_CPU) -D$(IO_SELECT) -mmcu=$(MCU) $(INCLUDES)
 LDFLAGS = -mmcu=$(MCU)
 
 # AVR-ISPs
-USBTINY = -cusbtiny
-DIAMEX  = -cstk500 -P/dev/ttyACM0
+USBTINY = -c usbtiny
+DIAMEX  = -c stk500 -P /dev/ttyACM0
 
 ISP = $(USBTINY)
 
