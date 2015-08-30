@@ -1,5 +1,5 @@
-#ifndef LIB_MCP4151_H_
-#define LIB_MCP4151_H_
+#ifndef MCP4151_H_
+#define MCP4151_H_
 
 #define MCP4151_8_CMD0 2
 #define MCP4151_8_CMD1 3

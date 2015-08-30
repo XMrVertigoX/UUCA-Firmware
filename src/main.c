@@ -1,5 +1,6 @@
 /* Standard libraries */
 #include <stdint.h>
+#include <assert.h>
 
 /* AVR related libraries */
 #include <avr/eeprom.h>
@@ -27,6 +28,19 @@ FUSES = { .low = 0xFF, .high = 0xDE, .extended = 0x05, };
 /* Default charger settings for eeprom */
 uint8_t foo EEMEM = 0;
 
+// handle diagnostic informations given by assertion and abort program execution:
+void __assert(const char *__func, const char *__file, int __lineno,
+		const char *__sexp) {
+	// transmit diagnostic informations through serial link.
+	Serial_printAndReturn(__func);
+	Serial_printAndReturn(__file);
+	Serial_printIntegerAndReturn(__lineno, DEC);
+	Serial_printAndReturn(__sexp);
+	//Serial.flush();
+	// abort program execution.
+	abort();
+}
+
 int VREF = 5;
 int BITS = 10;
 
@@ -37,9 +51,11 @@ float getVoltage(uint16_t adcValue) {
 
 void testTask(void *pvParameters) {
 	for (;;) {
-		Serial_print("Voltage: ");
+		/*Serial_print("Voltage: ");
 		Serial_printInteger(getVoltage(ADC_readValue(0)), 10);
-		Serial_print("V\n");
+		Serial_print("V\n");*/
+
+		assert(false);
 
 		vTaskDelay(1000);
 	}

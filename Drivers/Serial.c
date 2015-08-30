@@ -14,7 +14,7 @@ void writeByte(uint8_t dataByte) {
 		;
 }
 
-void Serial_print(char *str) {
+void Serial_print(const char *str) {
 	int i;
 
 	for (i = 0; i < strlen(str); i++) {
@@ -28,12 +28,12 @@ void Serial_print(char *str) {
 	}
 }
 
-void Serial_printAndReturn(char *str) {
+void Serial_printAndReturn(const char *str) {
 	Serial_print(str);
 	Serial_print("\r\n");
 }
 
-void Serial_printInteger(long val, uint8_t base) {
+void Serial_printInteger(int val, uint8_t base) {
 	uint8_t digits;
 
 	// Calculate amount of digits
@@ -51,7 +51,7 @@ void Serial_printInteger(long val, uint8_t base) {
 	Serial_print(str);
 }
 
-void Serial_printIntegerAndReturn(long val, uint8_t base) {
+void Serial_printIntegerAndReturn(int val, uint8_t base) {
 	Serial_printInteger(val, base);
 	Serial_print("\r\n");
 }
