@@ -1,4 +1,4 @@
-#include "SPI.h"
+#include <SPI.h>
 
 void setupSPIBus() {
 	// Set MOSI, SCK and SS as outputs

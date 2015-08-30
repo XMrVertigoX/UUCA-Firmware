@@ -1,7 +1,7 @@
 #ifndef ADC_H_
 #define ADC_H_
 
-#include <inttypes.h>
+#include <stdint.h>
 #include <stdbool.h>
 
 #include <avr/io.h>

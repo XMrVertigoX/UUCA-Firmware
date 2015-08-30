@@ -1,7 +1,7 @@
 #ifndef SPI_H_
 #define SPI_H_
 
-#include <inttypes.h>
+#include <stdint.h>
 #include <stdbool.h>
 #include <avr/io.h>
 

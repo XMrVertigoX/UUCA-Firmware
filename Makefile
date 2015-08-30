@@ -1,27 +1,28 @@
 MCU    = atmega328p
 TARGET = main
 
-BINARY = Firmware.elf
-
-# Macros
-F_CPU = 16000000
-IO_SELECT  = __AVR_ATmega328P__
-
-SOURCES  = $(wildcard src/*.c)
-SOURCES += $(wildcard src/drivers/*.c)
+SOURCES  = $(wildcard Drivers/*.c)
 SOURCES += $(wildcard FreeRTOS/*.c)
 SOURCES += $(wildcard FreeRTOS/portable/MemMang/*.c)
 SOURCES += $(wildcard FreeRTOS/portable/GCC/ATMega328P/*.c)
+SOURCES += $(wildcard src/*.c)
+SOURCES += $(wildcard src/drivers/*.c)
 
 OBJECTS = $(patsubst %.c, %.o, $(SOURCES))
 
-INCLUDES  = -I src/include
+INCLUDES  = -I Drivers/include
 INCLUDES += -I FreeRTOS/include
 INCLUDES += -I FreeRTOS/portable/GCC/ATMega328P
+INCLUDES += -I src/include
+
+MACROS  = -D F_CPU=16000000
+MACROS += -D __AVR_ATmega328P__
 
 CC      = avr-gcc
-CFLAGS  = -c -Os -DF_CPU=$(F_CPU) -D$(IO_SELECT) -mmcu=$(MCU) $(INCLUDES)
+CFLAGS  = -c -Os -mmcu=$(MCU) $(MACROS) $(INCLUDES)
 LDFLAGS = -mmcu=$(MCU)
+
+BINARY = Firmware.elf
 
 # AVR-ISPs
 USBTINY = -c usbtiny
@@ -56,4 +57,3 @@ size: $(BINARY)
 
 clean:
 	rm -rf $(BINARY) $(OBJECTS)
-	

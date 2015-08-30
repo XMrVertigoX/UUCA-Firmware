@@ -1,29 +1,36 @@
-#include <inttypes.h>
+/* Standard libraries */
+#include <stdint.h>
 
-#include "avr/eeprom.h"
-#include "avr/io.h"
+/* AVR related libraries */
+#include <avr/eeprom.h>
+#include <avr/io.h>
 #include <util/delay.h>
 
-#include "ADC.h"
-#include "Serial.h"
-#include "SPI.h"
+/* FreeRTOS libraries */
+#include <FreeRTOS.h>
+#include <task.h>
 
-#include "FreeRTOS.h"
-#include "task.h"
+/* Local driver */
+#include <ADC.h>
+#include <Serial.h>
+#include <SPI.h>
 
-#define STACK_SIZE_FOR_TASK (configMINIMAL_STACK_SIZE + 10)
-#define TASK_PRIORITY       (tskIDLE_PRIORITY + 1)
+#define STACK_SIZE_FOR_TASK (configMINIMAL_STACK_SIZE)
 
-// Arduino fuse settings
+#define tskPRIORITY_LOW  (tskIDLE_PRIORITY + 1)
+#define tskPRIORITY_MID  (tskIDLE_PRIORITY + 2)
+#define tskPRIORITY_HIGH (tskIDLE_PRIORITY + 3)
+
+/* Arduino fuse settings */
 FUSES = { .low = 0xFF, .high = 0xDE, .extended = 0x05, };
 
-// Default charger settings for eeprom
+/* Default charger settings for eeprom */
 uint8_t foo EEMEM = 0;
 
 int VREF = 5;
 int BITS = 10;
 
-// TODO: Calculation incorrect!
+/* TODO: Calculation incorrect! */
 float getVoltage(uint16_t adcValue) {
 	return VREF * ((float) adcValue) / ((2 ^ BITS) - 1);
 }
@@ -36,17 +43,21 @@ void testTask(void *pvParameters) {
 
 		vTaskDelay(1000);
 	}
+
+	vTaskDelete(NULL);
 }
 
 int main(void) {
-// TODO: write boardInit somewhere
+	/* TODO: write boardInit somewhere */
 
 	ADC_initializeHardware();
 	Serial_initializeHardware();
 	SPI_initializeHardware();
 
-	xTaskCreate(testTask, "testTask", STACK_SIZE_FOR_TASK, NULL, TASK_PRIORITY,
+	xTaskCreate(testTask, "test", STACK_SIZE_FOR_TASK, NULL, tskPRIORITY_LOW,
 			NULL);
 
 	vTaskStartScheduler();
+
+	return 1;
 }
