@@ -1,6 +1,6 @@
 #include <SPI.h>
 
-void setupSPIBus() {
+static void setupSPIBus() {
 	// Set MOSI, SCK and SS as outputs
 	DDRB |= (1 << MOSI) | (1 << SCK) | (1 << SS);
 
@@ -8,7 +8,7 @@ void setupSPIBus() {
 	SPCR = (1 << SPE) | (1 << MSTR) | (1 << SPR0);
 }
 
-void setupChipSelect() {
+static void setupChipSelect() {
 	// Set chip select lines as outputs
 	DDRB |= (1 << POTI0) | (1 << POTI1);
 
@@ -16,21 +16,21 @@ void setupChipSelect() {
 	PORTB |= (1 << POTI0) | (1 << POTI1);
 }
 
-void enableChipSelect(uint8_t chipSelect) {
+static void enableChipSelect(uint8_t chipSelect) {
 	// Set chipSelect pin low
 	PORTB &= ~((1 << chipSelect));
 }
 
-void disableChipSelect(uint8_t chipSelect) {
+static void disableChipSelect(uint8_t chipSelect) {
 	// Set chipSelect pin high
 	PORTB |= (1 << chipSelect);
 }
 
-void writeData(uint8_t data) {
+static void writeData(uint8_t data) {
 	SPDR = data;
 }
 
-bool transmissionComplete() {
+static bool transmissionComplete() {
 	return SPSR & (1 << SPIF);
 }
 

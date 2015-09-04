@@ -25,10 +25,11 @@ LDFLAGS = -mmcu=$(MCU)
 BINARY = Firmware.elf
 
 # AVR-ISPs
-USBTINY = -c usbtiny
+AVRISPmkII = -c avrispmkII
 DIAMEX  = -c stk500 -P /dev/ttyACM0
+USBTINY = -c usbtiny
 
-ISP = $(USBTINY)
+ISP = $(AVRISPmkII)
 
 
 # ----- Rules ------------------------------------------------------------------
@@ -44,13 +45,13 @@ $(BINARY): $(OBJECTS)
 program: program_flash program_eeprom program_fuses
 
 program_flash: $(BINARY)
-	avrdude -p$(MCU) $(ISP) -sF -Uflash:w:$(BINARY)
+	avrdude -p$(MCU) $(ISP) -Uflash:w:$(BINARY)
 
 program_eeprom: $(BINARY)
-	avrdude -p$(MCU) $(ISP) -sF -Ueeprom:w:$(BINARY)
+	avrdude -p$(MCU) $(ISP) -Ueeprom:w:$(BINARY)
 
 program_fuses: $(BINARY)
-	avrdude -p$(MCU) $(ISP) -sF -Ulfuse:w:$(BINARY) -Uhfuse:w:$(BINARY) -Uefuse:w:$(BINARY)
+	avrdude -p$(MCU) $(ISP) -Ulfuse:w:$(BINARY) -Uhfuse:w:$(BINARY) -Uefuse:w:$(BINARY)
 
 size: $(BINARY)
 	avr-size $(BINARY)

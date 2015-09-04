@@ -1,6 +1,5 @@
 /* Standard libraries */
 #include <stdint.h>
-#include <assert.h>
 
 /* AVR related libraries */
 #include <avr/eeprom.h>
@@ -13,33 +12,20 @@
 
 /* Local driver */
 #include <ADC.h>
-#include <Serial.h>
+#include <debug.h>
 #include <SPI.h>
 
-#define STACK_SIZE_FOR_TASK (configMINIMAL_STACK_SIZE)
+#define stackSize (configMINIMAL_STACK_SIZE)
 
-#define tskPRIORITY_LOW  (tskIDLE_PRIORITY + 1)
-#define tskPRIORITY_MID  (tskIDLE_PRIORITY + 2)
-#define tskPRIORITY_HIGH (tskIDLE_PRIORITY + 3)
+#define taskPriorityLow  (tskIDLE_PRIORITY + 1)
+#define taskPriorityMid  (tskIDLE_PRIORITY + 2)
+#define taskPriorityHigh (tskIDLE_PRIORITY + 3)
 
 /* Arduino fuse settings */
-FUSES = { .low = 0xFF, .high = 0xDE, .extended = 0x05, };
+FUSES = { .low = LFUSE_DEFAULT, .high = HFUSE_DEFAULT, .extended = EFUSE_DEFAULT, };
 
 /* Default charger settings for eeprom */
 uint8_t foo EEMEM = 0;
-
-// handle diagnostic informations given by assertion and abort program execution:
-void __assert(const char *__func, const char *__file, int __lineno,
-		const char *__sexp) {
-	// transmit diagnostic informations through serial link.
-	Serial_printAndReturn(__func);
-	Serial_printAndReturn(__file);
-	Serial_printIntegerAndReturn(__lineno, DEC);
-	Serial_printAndReturn(__sexp);
-	//Serial.flush();
-	// abort program execution.
-	abort();
-}
 
 int VREF = 5;
 int BITS = 10;
@@ -49,11 +35,11 @@ float getVoltage(uint16_t adcValue) {
 	return VREF * ((float) adcValue) / ((2 ^ BITS) - 1);
 }
 
-void testTask(void *pvParameters) {
+void mainTask(void *pvParameters) {
 	for (;;) {
 		/*Serial_print("Voltage: ");
-		Serial_printInteger(getVoltage(ADC_readValue(0)), 10);
-		Serial_print("V\n");*/
+		 Serial_printInteger(getVoltage(ADC_readValue(0)), 10);
+		 Serial_print("V\n");*/
 
 		assert(false);
 
@@ -70,8 +56,7 @@ int main(void) {
 	Serial_initializeHardware();
 	SPI_initializeHardware();
 
-	xTaskCreate(testTask, "test", STACK_SIZE_FOR_TASK, NULL, tskPRIORITY_LOW,
-			NULL);
+	xTaskCreate(mainTask, "main", stackSize, NULL, taskPriorityHigh, NULL);
 
 	vTaskStartScheduler();
 

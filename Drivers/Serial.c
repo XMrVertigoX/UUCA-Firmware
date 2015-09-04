@@ -7,7 +7,7 @@ void Serial_initializeHardware(void) {
 	UBRR0L = BAUD_PRESCALE;
 }
 
-void writeByte(uint8_t dataByte) {
+static void writeByte(uint8_t dataByte) {
 	UDR0 = dataByte;
 
 	while (!(UCSR0A & (1 << UDRE0)))

@@ -1,6 +1,6 @@
 #include <ADC.h>
 
-void setupADCController() {
+static void setupADCController() {
 
 	/*
 	 * ADEN: Enable the ADC
@@ -9,7 +9,7 @@ void setupADCController() {
 	ADCSRA |= (1 << ADEN) | (1 << ADPS2) | (1 << ADPS1) | (1 << ADPS0);
 }
 
-void setupADCMultiplexer() {
+static void setupADCMultiplexer() {
 
 	/*
 	 * REFS0: Use AVCC as reference.
@@ -17,7 +17,7 @@ void setupADCMultiplexer() {
 	ADMUX |= (1 << REFS0);
 }
 
-void setChannel(uint8_t channel) {
+static void setChannel(uint8_t channel) {
 
 	/*
 	 * Set conversion channel
@@ -25,7 +25,7 @@ void setChannel(uint8_t channel) {
 	ADMUX |= channel;
 }
 
-void resetChannel() {
+static void resetChannel() {
 
 	/*
 	 * set MUX3...0 to zero
@@ -33,7 +33,7 @@ void resetChannel() {
 	ADMUX &= 0xF0;
 }
 
-void startConversion() {
+static void startConversion() {
 
 	/*
 	 * ADSC: Start conversion
@@ -41,7 +41,7 @@ void startConversion() {
 	ADCSRA |= (1 << ADSC);
 }
 
-bool channelValidity(uint8_t channel) {
+static bool channelValidity(uint8_t channel) {
 
 	/*
 	 * 0...7: 10 bit ADC
@@ -55,7 +55,7 @@ bool channelValidity(uint8_t channel) {
 	}
 }
 
-bool conversionFinished() {
+static bool conversionFinished() {
 	return !(ADCSRA & (1 << ADSC));
 }
 

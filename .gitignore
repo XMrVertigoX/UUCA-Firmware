@@ -11,6 +11,11 @@ README.html
 /Default/
 /Release/
 
-# Compiler output
+# Compiler/Linker output
+*.eep
 *.elf
+*.hex
 *.o
+
+# ctags file
+tags
