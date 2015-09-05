@@ -3,7 +3,7 @@ TARGET = main
 
 SOURCES  = $(wildcard Drivers/*.c)
 SOURCES += $(wildcard FreeRTOS/*.c)
-SOURCES += $(wildcard FreeRTOS/portable/MemMang/*.c)
+SOURCES += $(wildcard FreeRTOS/portable/MemMang/heap_3.c)
 SOURCES += $(wildcard FreeRTOS/portable/GCC/ATMega328P/*.c)
 SOURCES += $(wildcard src/*.c)
 SOURCES += $(wildcard src/drivers/*.c)
@@ -29,7 +29,7 @@ AVRISPmkII = -c avrispmkII
 DIAMEX  = -c stk500 -P /dev/ttyACM0
 USBTINY = -c usbtiny
 
-ISP = $(AVRISPmkII)
+ISP = $(USBTINY)
 
 
 # ----- Rules ------------------------------------------------------------------
