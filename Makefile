@@ -1,18 +1,18 @@
 MCU    = atmega328p
 TARGET = main
 
-SOURCES  = $(wildcard Drivers/*.c)
-SOURCES += $(wildcard FreeRTOS/*.c)
-SOURCES += $(wildcard FreeRTOS/portable/MemMang/heap_3.c)
-SOURCES += $(wildcard FreeRTOS/portable/GCC/ATMega328P/*.c)
+SOURCES  = $(wildcard FreeRTOS/Source/*.c)
+SOURCES += $(wildcard FreeRTOS/Source/portable/MemMang/heap_3.c)
+SOURCES += $(wildcard FreeRTOS/Source/portable/GCC/ATMega328P/*.c)
+SOURCES += $(wildcard Drivers/*.c)
 SOURCES += $(wildcard src/*.c)
 SOURCES += $(wildcard src/drivers/*.c)
 
 OBJECTS = $(patsubst %.c, %.o, $(SOURCES))
 
-INCLUDES  = -I Drivers/include
-INCLUDES += -I FreeRTOS/include
-INCLUDES += -I FreeRTOS/portable/GCC/ATMega328P
+INCLUDES  = -I FreeRTOS/Source/include
+INCLUDES += -I FreeRTOS/Source/portable/GCC/ATMega328P
+INCLUDES += -I Drivers/include
 INCLUDES += -I src/include
 
 MACROS  = -D F_CPU=16000000
