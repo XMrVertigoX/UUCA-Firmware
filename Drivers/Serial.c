@@ -1,57 +1,42 @@
 #include <Serial.h>
 
-void Serial_initializeHardware(void) {
+#define UBRR_VALUE (((F_CPU / (USART_BAUDRATE * 16UL))) - 1)
+
+void USART0Init(void) {
+	// Set baud rate
+	UBRR0H = (uint8_t) (UBRR_VALUE >> 8);
+	UBRR0L = (uint8_t) (UBRR_VALUE);
+
+	// Set frame format to 8 data bits, no parity, 1 stop bit
+	UCSR0C |= (1 << UCSZ01) | (1 << UCSZ00);
+
+	// enable transmission and reception
 	UCSR0B |= (1 << RXEN0) | (1 << TXEN0);
-	UCSR0C |= (1 << UCSZ00) | (1 << UCSZ01);
-	UBRR0H = (BAUD_PRESCALE >> 8);
-	UBRR0L = BAUD_PRESCALE;
 }
 
-static void writeByte(uint8_t dataByte) {
-	UDR0 = dataByte;
-
-	while (!(UCSR0A & (1 << UDRE0)))
-		;
-}
-
-void Serial_print(const char *str) {
-	int i;
-
-	for (i = 0; i < strlen(str); i++) {
-
-		// Print a space if char is not an ASCII character
-		if (isascii(str[i])) {
-			writeByte(str[i]);
-		} else {
-			writeByte(0x20);
-		}
-	}
-}
-
-void Serial_printAndReturn(const char *str) {
-	Serial_print(str);
-	Serial_print("\r\n");
-}
-
-void Serial_printInteger(int val, uint8_t base) {
-	uint8_t digits;
-
-	// Calculate amount of digits
-	if (val == 0) {
-		digits = 1;
-	} else {
-		digits = (uint8_t) log10(abs(val)) + 1;
+int USART0SendByte(char data, FILE *stream) {
+	// Send additionally carriage return
+	if (data == '\n') {
+    	USART0SendByte('\r', 0);
 	}
 
-	// Create an empty char buffer matching the digits and add two for the terminating zero and the sign
-	char str[digits + 2];
+	// wait while previous byte is completed
+	while(!(UCSR0A & (1 << UDRE0)));
 
-	itoa(val, str, base);
+	// Transmit data
+	UDR0 = data;
 
-	Serial_print(str);
+	return 0;
 }
 
-void Serial_printIntegerAndReturn(int val, uint8_t base) {
-	Serial_printInteger(val, base);
-	Serial_print("\r\n");
+int USART0ReceiveByte(FILE *stream) {
+	uint8_t data;
+
+	// Wait for byte to be received
+	while(!(UCSR0A & (1 << RXC0)));
+
+	data = UDR0;
+
+	// Return received data
+	return data;
 }

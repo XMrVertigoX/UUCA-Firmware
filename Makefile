@@ -17,7 +17,9 @@ INCLUDES += -I Drivers/include
 INCLUDES += -I src/include
 
 SYMBOLS  = -D F_CPU=16000000
+SYMBOLS += -D USART_BAUDRATE=9600
 SYMBOLS += -D __AVR_ATmega328P__
+SYMBOLS += -D __ASSERT_USE_STDERR
 
 CC      = avr-gcc
 CFLAGS  = -c -Os -mmcu=$(MCU) $(SYMBOLS) $(INCLUDES)
@@ -34,6 +36,9 @@ ISP = $(AVRISPmkII)
 
 all: $(BINARY).elf $(BINARY).hex $(BINARY)_eeprom.hex
 
+size: $(BINARY).elf
+	avr-size $(BINARY).elf
+
 program: program_flash program_eeprom
 
 program_flash: $(BINARY).hex
@@ -41,9 +46,6 @@ program_flash: $(BINARY).hex
 
 program_eeprom: $(BINARY)_eeprom.hex
 	avrdude -p $(MCU) $(ISP) -U eeprom:w:$(BINARY)_eeprom.hex:i
-
-size: $(BINARY).elf
-	avr-size $(BINARY).elf
 
 clean:
 	rm -rf *.elf *.hex $(OBJECTS)
