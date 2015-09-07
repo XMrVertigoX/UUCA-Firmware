@@ -73,8 +73,7 @@ uint16_t ADC_readValue(uint8_t channel) {
 	setChannel(channel);
 	startConversion();
 
-	while (!conversionFinished())
-		;
+	while (!conversionFinished());
 
 	resetChannel();
 

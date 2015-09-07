@@ -2,24 +2,25 @@ MCU    = atmega328p
 TARGET = main
 BINARY = Firmware
 
-SOURCES  = $(wildcard FreeRTOS/Source/*.c)
-SOURCES += $(wildcard FreeRTOS/Source/portable/MemMang/heap_3.c)
-SOURCES += $(wildcard FreeRTOS/Source/portable/GCC/ATMega328P/*.c)
-SOURCES += $(wildcard Drivers/*.c)
-SOURCES += $(wildcard src/*.c)
-SOURCES += $(wildcard src/drivers/*.c)
+SOURCES = \
+	$(wildcard FreeRTOS/Source/*.c) \
+	$(wildcard FreeRTOS/Source/portable/MemMang/heap_3.c) \
+	$(wildcard FreeRTOS/Source/portable/GCC/ATMega328P/*.c) \
+	$(wildcard Drivers/*.c) \
+	$(wildcard src/*.c) \
+	$(wildcard src/drivers/*.c) \
 
 OBJECTS = $(patsubst %.c, %.o, $(SOURCES))
 
-INCLUDES  = -I FreeRTOS/Source/include
-INCLUDES += -I FreeRTOS/Source/portable/GCC/ATMega328P
-INCLUDES += -I Drivers/include
-INCLUDES += -I src/include
+INCLUDES = \
+	-I FreeRTOS/Source/include \
+	-I FreeRTOS/Source/portable/GCC/ATMega328P \
+	-I Drivers/include \
+	-I src/include \
 
-SYMBOLS  = -D F_CPU=16000000
-SYMBOLS += -D USART_BAUDRATE=9600
-SYMBOLS += -D __AVR_ATmega328P__
-SYMBOLS += -D __ASSERT_USE_STDERR
+SYMBOLS = \
+	-D __ASSERT_USE_STDERR \
+	# -D __AVR_ATmega328P__ \
 
 CC      = avr-gcc
 CFLAGS  = -c -Os -mmcu=$(MCU) $(SYMBOLS) $(INCLUDES)
@@ -39,7 +40,7 @@ all: $(BINARY).elf $(BINARY).hex $(BINARY)_eeprom.hex
 size: $(BINARY).elf
 	avr-size $(BINARY).elf
 
-program: program_flash program_eeprom
+program: program_flash
 
 program_flash: $(BINARY).hex
 	avrdude -p $(MCU) $(ISP) -U flash:w:$(BINARY).hex:i

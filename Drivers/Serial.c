@@ -14,7 +14,7 @@ void USART0Init(void) {
 	UCSR0B |= (1 << RXEN0) | (1 << TXEN0);
 }
 
-int USART0SendByte(char data, FILE *stream) {
+int USART0SendByte(uint8_t data, FILE *stream) {
 	// Send additionally carriage return
 	if (data == '\n') {
     	USART0SendByte('\r', 0);

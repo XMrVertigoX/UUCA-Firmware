@@ -10,6 +10,9 @@
 #include <FreeRTOS.h>
 #include <task.h>
 
+// Global configuration
+#include <Config.h>
+
 // Local driver
 #include <ADC.h>
 #include <Serial.h>
