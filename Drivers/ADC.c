@@ -1,5 +1,9 @@
 #include <ADC.h>
 
+#include <stdbool.h>
+
+#include <avr/io.h>
+
 static void setupADCController() {
 
 	/*
@@ -59,7 +63,7 @@ static bool conversionFinished() {
 	return !(ADCSRA & (1 << ADSC));
 }
 
-void ADC_initializeHardware(void) {
+void ADC_init(void) {
 	setupADCController();
 	setupADCMultiplexer();
 }

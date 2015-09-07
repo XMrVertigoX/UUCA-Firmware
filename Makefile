@@ -2,25 +2,24 @@ MCU    = atmega328p
 TARGET = main
 BINARY = Firmware
 
-SOURCES = \
-	$(wildcard FreeRTOS/Source/*.c) \
-	$(wildcard FreeRTOS/Source/portable/MemMang/heap_3.c) \
-	$(wildcard FreeRTOS/Source/portable/GCC/ATMega328P/*.c) \
-	$(wildcard Drivers/*.c) \
-	$(wildcard src/*.c) \
-	$(wildcard src/drivers/*.c) \
+SOURCES += $(wildcard FreeRTOS/Source/*.c)
+SOURCES += FreeRTOS/Source/portable/MemMang/heap_3.c
+SOURCES += FreeRTOS/Source/portable/GCC/ATMega328P/port.c
+SOURCES += $(wildcard Drivers/*.c)
+SOURCES += $(wildcard src/*.c)
 
 OBJECTS = $(patsubst %.c, %.o, $(SOURCES))
 
-INCLUDES = \
-	-I FreeRTOS/Source/include \
-	-I FreeRTOS/Source/portable/GCC/ATMega328P \
-	-I Drivers/include \
-	-I src/include \
+INCLUDES += -I FreeRTOS/Source/include
+INCLUDES += -I FreeRTOS/Source/portable/GCC/ATMega328P
+INCLUDES += -I Drivers/include
+INCLUDES += -I src/include
 
-SYMBOLS = \
-	-D __ASSERT_USE_STDERR \
-	# -D __AVR_ATmega328P__ \
+SYMBOLS += -D F_CPU=16000000
+SYMBOLS += -D BAUD=115200
+# SYMBOLS += -D __AVR_ATmega328P__
+SYMBOLS += -D __ASSERT_USE_STDERR
+# SYMBOLS += -D NDEBUG
 
 CC      = avr-gcc
 CFLAGS  = -c -Os -mmcu=$(MCU) $(SYMBOLS) $(INCLUDES)

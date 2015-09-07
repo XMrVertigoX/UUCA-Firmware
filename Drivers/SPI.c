@@ -1,5 +1,16 @@
 #include <SPI.h>
 
+#include <stdbool.h>
+#include <avr/io.h>
+
+#define POTI0 PB0
+#define POTI1 PB1
+
+#define SS    PB2
+#define MOSI  PB3
+#define MISO  PB4
+#define SCK   PB5
+
 static void setupSPIBus() {
 	// Set MOSI, SCK and SS as outputs
 	DDRB |= (1 << MOSI) | (1 << SCK) | (1 << SS);
