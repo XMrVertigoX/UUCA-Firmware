@@ -7,9 +7,9 @@ SOURCES += FreeRTOS/portable/GCC/ATMega328P/port.c
 SOURCES += FreeRTOS/list.c
 # SOURCES += FreeRTOS/queue.c
 SOURCES += FreeRTOS/tasks.c
-SOURCES += Drivers/ADC_$(MCU).c
-# SOURCES += Drivers/SPI_$(MCU).c
-SOURCES += Drivers/USART_$(MCU).c
+SOURCES += Drivers/$(MCU)/adc.c
+SOURCES += Drivers/$(MCU)/spi.c
+SOURCES += Drivers/$(MCU)/usart.c
 SOURCES += src/main.c
 
 INCLUDES += FreeRTOS/include
@@ -19,9 +19,9 @@ INCLUDES += src/include
 
 SYMBOLS += F_CPU=16000000
 SYMBOLS += BAUD=9600
-# SYMBOLS += __ASSERT_USE_STDERR
-# SYMBOLS += __AVR_ATmega328P__
+SYMBOLS += __ASSERT_USE_STDERR
 # SYMBOLS += NDEBUG
+# SYMBOLS += __AVR_ATmega328P__
 
 OBJECTS = $(patsubst %.c, %.o, $(SOURCES))
 
