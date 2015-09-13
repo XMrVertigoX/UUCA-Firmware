@@ -58,11 +58,10 @@ void mainTask(void *parameters) {
 
 void testTask(void *parameters) {
     for (;;) {
-        char buffer[3];
-        uint8_t bufferSize = sizeof(buffer);
+        uint8_t buffer[3];
 
-        fread(buffer, 1, bufferSize, stdin);
-        fwrite(buffer, 1, bufferSize, stdout);
+        fread(buffer, 1, sizeof(buffer), stdin);
+        fwrite(buffer, 1, sizeof(buffer), stdout);
     }
 }
 
