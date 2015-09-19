@@ -2,7 +2,7 @@
 #include <stdint.h>
 #include <stdio.h>
 
-// AVR related libraries
+// AVR libraries
 #include <avr/eeprom.h>
 #include <avr/io.h>
 
@@ -13,7 +13,7 @@
 // Driver libraries
 #include <adc.h>
 #include <spi.h>
-#include <usart.h>
+#include <uart.h>
 
 #define taskPriority (tskIDLE_PRIORITY + 1)
 
@@ -31,9 +31,17 @@
 // Default charger settings for eeprom
 // uint8_t foo EEMEM = 0;
 
-// set stream pointer
-FILE USART0_Stream = FDEV_SETUP_STREAM(USART0_sendByte, USART0_receiveByte,
-                                       _FDEV_SETUP_RW);
+uart* uart0;
+
+int uart0Put(char c, FILE *stream) {
+	return UART_sendByte(uart0, c);
+}
+
+int uart0Get(FILE *stream) {
+	return UART_receiveByte(uart0);
+}
+
+FILE uart0IOStream = FDEV_SETUP_STREAM(uart0Put, uart0Get, _FDEV_SETUP_RW);
 
 // TODO: Calculation incorrect or incompatible!
 // float getVoltage(long adcValue) {
@@ -66,14 +74,15 @@ void testTask(void *parameters) {
 }
 
 int main(void) {
+    UART_create(uart0);
+
     ADC_init();
     SPI_init();
-    USART0_init();
 
     // assign our stream to standard I/O streams
-    stdin  = &USART0_Stream;
-    stdout = &USART0_Stream;
-    stderr = &USART0_Stream;
+    stdin  = &uart0IOStream;
+    stdout = &uart0IOStream;
+    stderr = &uart0IOStream;
 
     xTaskCreate(testTask, "testTask", configMINIMAL_STACK_SIZE, NULL,
 				taskPriority, NULL);

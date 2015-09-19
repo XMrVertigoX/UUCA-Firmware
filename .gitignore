@@ -16,6 +16,7 @@ README.html
 *.elf
 *.hex
 *.o
+*.out
 
 # ctags file
 tags
