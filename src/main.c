@@ -12,7 +12,8 @@
 
 // Driver libraries
 #include <adc.h>
-#include <spi.h>
+// #include <gpio.h>
+// #include <spi.h>
 #include <uart.h>
 
 #define taskPriority (tskIDLE_PRIORITY + 1)
@@ -32,9 +33,11 @@
 // uint8_t foo EEMEM = 0;
 
 uart* uart0;
+adc* adc8;
 
 int uart0Put(char c, FILE *stream) {
-	return UART_sendByte(uart0, c);
+	UART_sendByte(uart0, c);
+	return 0;
 }
 
 int uart0Get(FILE *stream) {
@@ -57,7 +60,7 @@ void mainTask(void *parameters) {
     long voltage;
 
     for (;;) {
-        voltage = ADC_readValue(0);
+        voltage = ADC_readValue(adc8);
         printf("%ld\r\n", voltage);
 
         vTaskDelay(msToTicks(1000));
@@ -75,9 +78,9 @@ void testTask(void *parameters) {
 
 int main(void) {
     UART_create(uart0);
+	ADC_create(adc8, ADC_TEMPERATURE);
 
-    ADC_init();
-    SPI_init();
+    // SPI_init();
 
     // assign our stream to standard I/O streams
     stdin  = &uart0IOStream;
