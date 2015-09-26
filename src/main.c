@@ -32,19 +32,8 @@
 // Default charger settings for eeprom
 // uint8_t foo EEMEM = 0;
 
-uart* uart0;
-adc* adc8;
-
-int uart0Put(char c, FILE *stream) {
-	UART_sendByte(uart0, c);
-	return 0;
-}
-
-int uart0Get(FILE *stream) {
-	return UART_receiveByte(uart0);
-}
-
-FILE uart0IOStream = FDEV_SETUP_STREAM(uart0Put, uart0Get, _FDEV_SETUP_RW);
+UART uart;
+ADConverter tempSensor;
 
 // TODO: Calculation incorrect or incompatible!
 // float getVoltage(long adcValue) {
@@ -60,7 +49,7 @@ void mainTask(void *parameters) {
     long voltage;
 
     for (;;) {
-        voltage = ADC_readValue(adc8);
+        voltage = ADC_readValue(tempSensor);
         printf("%ld\r\n", voltage);
 
         vTaskDelay(msToTicks(1000));
@@ -77,15 +66,15 @@ void testTask(void *parameters) {
 }
 
 int main(void) {
-    UART_create(uart0);
-	ADC_create(adc8, ADC_TEMPERATURE);
+    uart = UART_create();
+	tempSensor = ADC_create(ADC_TEMPERATURE);
 
     // SPI_init();
 
     // assign our stream to standard I/O streams
-    stdin  = &uart0IOStream;
-    stdout = &uart0IOStream;
-    stderr = &uart0IOStream;
+    stdin  = UART_getStream(uart);
+    stdout = UART_getStream(uart);
+    stderr = UART_getStream(uart);
 
     xTaskCreate(testTask, "testTask", configMINIMAL_STACK_SIZE, NULL,
 				taskPriority, NULL);
