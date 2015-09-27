@@ -40,28 +40,32 @@ ISP = $(AVRISPmkII)
 
 all: $(BINARY).elf
 
-size: $(BINARY).elf
-	avr-size $(BINARY).elf
-
 program: program_flash
 
 program_flash: $(BINARY).hex
-	avrdude -p $(MCU) $(ISP) -U flash:w:$(BINARY).hex:i
+	avrdude -p $(MCU) $(ISP) -U flash:w:$<:i
 
 program_eeprom: $(BINARY)_eeprom.hex
-	avrdude -p $(MCU) $(ISP) -U eeprom:w:$(BINARY)_eeprom.hex:i
+	avrdude -p $(MCU) $(ISP) -U eeprom:w:$<:i
+
+size: $(BINARY).elf
+	avr-size $<
 
 clean:
-	rm -rf *.elf *.hex $(OBJECTS)
+	$(RM) *.elf *.hex $(OBJECTS)
 
 %.o: %.c
+	$(MKDIR) $(OBJDIR)
 	$(CC) $(CFLAGS) -o $@ $<
 
 $(BINARY).elf: $(OBJECTS)
-	$(CC) $(LDFLAGS) $(OBJECTS) -o $(BINARY).elf
+	$(MKDIR) $(BINDIR)
+	$(CC) $(LDFLAGS) $(OBJECTS) -o $@
 
 $(BINARY).hex: $(BINARY).elf
-	avr-objcopy -j .text -j .data -O ihex $(BINARY).elf $(BINARY).hex
+	$(MKDIR) $(BINDIR)
+	avr-objcopy -j .text -j .data -O ihex $< $@
 
 $(BINARY)_eeprom.hex: $(BINARY).elf
-	avr-objcopy -j .eeprom --change-section-lma .eeprom=0 -O ihex $(BINARY).elf $(BINARY)_eeprom.hex
+	$(MKDIR) $(BINDIR)
+	avr-objcopy -j .eeprom --change-section-lma .eeprom=0 -O ihex $< $@
