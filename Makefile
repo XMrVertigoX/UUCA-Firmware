@@ -1,6 +1,20 @@
+BINDIR = _bin
+OBJDIR = _obj
+
 MCU    = atmega328p
 TARGET = main
-BINARY = Firmware
+BINARY = UUCA-Firmware
+
+INCLUDES += FreeRTOS/include
+INCLUDES += FreeRTOS/portable/GCC/ATMega328P
+INCLUDES += Drivers/include
+INCLUDES += src/include
+
+SYMBOLS += F_CPU=16000000
+SYMBOLS += F_SCL=400000
+SYMBOLS += BAUD=9600
+SYMBOLS += __ASSERT_USE_STDERR
+# SYMBOLS += NDEBUG
 
 SOURCES += FreeRTOS/portable/MemMang/heap_3.c
 SOURCES += FreeRTOS/portable/GCC/ATMega328P/port.c
@@ -12,60 +26,39 @@ SOURCES += Drivers/$(MCU)/spi.c
 SOURCES += Drivers/$(MCU)/uart.c
 SOURCES += src/main.c
 
-INCLUDES += FreeRTOS/include
-INCLUDES += FreeRTOS/portable/GCC/ATMega328P
-INCLUDES += Drivers/include
-INCLUDES += src/include
-
-SYMBOLS += F_CPU=16000000
-SYMBOLS += BAUD=9600
-# SYMBOLS += __ASSERT_USE_STDERR
-# SYMBOLS += NDEBUG
-# SYMBOLS += __AVR_ATmega328P__
-
-OBJECTS = $(patsubst %.c, %.o, $(SOURCES))
+OBJECTS = $(addprefix $(OBJDIR)/, $(patsubst %.c, %.o, $(SOURCES)))
 
 CC      = avr-gcc
 CFLAGS  = -c -Os -mmcu=$(MCU) $(addprefix -D ,$(SYMBOLS)) $(addprefix -I ,$(INCLUDES))
 LDFLAGS = -mmcu=$(MCU)
 
-# AVR-ISPs
-AVRISPmkII = -c avrispmkII
-DIAMEX     = -c stk500 -P /dev/ttyACM0
-USBTINY    = -c usbtiny
+MKDIR = mkdir -p
+RM    = rm -rf
 
-ISP = $(AVRISPmkII)
+ISP = -cavrispmkII
 
 # ----- Rules ------------------------------------------------------------------
 
-all: $(BINARY).elf
+all: $(BINDIR)/$(BINARY).elf $(BINDIR)/$(BINARY).hex
 
-program: program_flash
+program: $(BINDIR)/$(BINARY).hex
+	avrdude -p$(MCU) $(ISP) -Uflash:w:$<:i
 
-program_flash: $(BINARY).hex
-	avrdude -p $(MCU) $(ISP) -U flash:w:$<:i
-
-program_eeprom: $(BINARY)_eeprom.hex
-	avrdude -p $(MCU) $(ISP) -U eeprom:w:$<:i
-
-size: $(BINARY).elf
+size: $(BINDIR)/$(BINARY).elf
 	avr-size $<
 
 clean:
-	$(RM) *.elf *.hex $(OBJECTS)
+	$(RM) $(OBJDIR)
+	$(RM) $(BINDIR)
 
-%.o: %.c
-	$(MKDIR) $(OBJDIR)
-	$(CC) $(CFLAGS) -o $@ $<
-
-$(BINARY).elf: $(OBJECTS)
-	$(MKDIR) $(BINDIR)
+$(BINDIR)/$(BINARY).elf: $(OBJECTS)
+	@$(MKDIR) $(dir $@)
 	$(CC) $(LDFLAGS) $(OBJECTS) -o $@
 
-$(BINARY).hex: $(BINARY).elf
-	$(MKDIR) $(BINDIR)
-	avr-objcopy -j .text -j .data -O ihex $< $@
+$(OBJDIR)/%.o: %.c
+	@$(MKDIR) $(dir $@)
+	$(CC) $(CFLAGS) -o $@ $<
 
-$(BINARY)_eeprom.hex: $(BINARY).elf
-	$(MKDIR) $(BINDIR)
-	avr-objcopy -j .eeprom --change-section-lma .eeprom=0 -O ihex $< $@
+$(BINDIR)/$(BINARY).hex: $(BINDIR)/$(BINARY).elf
+	@$(MKDIR) $(BINDIR)
+	avr-objcopy -j .text -j .data -O ihex $< $@

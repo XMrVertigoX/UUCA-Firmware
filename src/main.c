@@ -13,7 +13,7 @@
 // Driver libraries
 #include <adc.h>
 // #include <gpio.h>
-// #include <spi.h>
+#include <spi.h>
 #include <uart.h>
 
 #define taskPriority (tskIDLE_PRIORITY + 1)
