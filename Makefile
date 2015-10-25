@@ -7,7 +7,7 @@ BINARY = UUCA-Firmware
 
 INCLUDES += FreeRTOS/include
 INCLUDES += FreeRTOS/portable/GCC/ATMega328P
-INCLUDES += Drivers/include
+INCLUDES += AVRCDrivers/include
 INCLUDES += src/include
 
 SYMBOLS += F_CPU=16000000
@@ -21,9 +21,9 @@ SOURCES += FreeRTOS/portable/GCC/ATMega328P/port.c
 SOURCES += FreeRTOS/list.c
 # SOURCES += FreeRTOS/queue.c
 SOURCES += FreeRTOS/tasks.c
-SOURCES += Drivers/$(MCU)/adc.c
-SOURCES += Drivers/$(MCU)/spi.c
-SOURCES += Drivers/$(MCU)/uart.c
+SOURCES += AVRCDrivers/$(MCU)/adc.c
+SOURCES += AVRCDrivers/$(MCU)/spi.c
+SOURCES += AVRCDrivers/$(MCU)/uart.c
 SOURCES += src/main.c
 
 OBJECTS = $(addprefix $(OBJDIR)/, $(patsubst %.c, %.o, $(SOURCES)))

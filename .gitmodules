@@ -1,6 +1,6 @@
 [submodule "FreeRTOS"]
 	path = FreeRTOS
 	url = https://github.com/XMrVertigoX/FreeRTOS.git
-[submodule "Drivers"]
-	path = Drivers
-	url = https://github.com/XMrVertigoX/AVR-Drivers.git
+[submodule "AVRCDrivers"]
+	path = AVRCDrivers
+	url = https://XMrVertigoX@github.com/XMrVertigoX/AVRCDrivers.git
