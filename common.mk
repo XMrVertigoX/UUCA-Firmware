@@ -1,5 +1,5 @@
-BINDIR = out
-OBJDIR = out
+BINDIR = _bin
+OBJDIR = _obj
 
 override CC = $(TOOLCHAIN_PREFIX)gcc
 override OBJCOPY = $(TOOLCHAIN_PREFIX)objcopy
@@ -17,7 +17,9 @@ OBJECTS = $(addprefix $(OBJDIR)/, $(addsuffix .o, $(basename $(SOURCES))))
 
 .PHONY: all clean size
 
-all: $(BINDIR)/$(NAME).elf $(BINDIR)/$(NAME).hex
+.PRECIOUS: $(OBJECTS)
+
+all: $(BINDIR)/$(NAME).elf
 
 clean:
 	$(RM) $(BINDIR)
